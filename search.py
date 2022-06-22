@@ -14,11 +14,23 @@ def merge_JsonFiles(filename):
     with open('output.json', 'w') as output_file:
         json.dump(result, output_file)
 
+# Make sure params are good
+if (len(sys.argv) != 2):
+	print("Usage: ./search.py names.txt")
+	quit()
+
 name = sys.argv[1]
 
+# Docker check (Outside of threading)
+print("Verifying docker image")
+os.system("docker run theyahya/sherlock >/dev/null")
+print("Verified")
+
+# Make sute the names file exists
 if not os.path.exists(name):
 	print("The name file " + name + " does not exist :(")
 	quit()
+
 names = open(name, "r").readlines()
 for thename in names:
 	thename = thename.strip()
