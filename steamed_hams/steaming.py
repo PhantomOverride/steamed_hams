@@ -31,6 +31,9 @@ class Steaming:
         self.profile['miniid'] = self.get_id(username)
         self.profile['name'] = self.get_name(username)
 
+        if self.profile['name'] not in self.profile['aliases']:
+            self.profile['aliases'].append(self.profile['name'])
+
         return self.profile
 
 

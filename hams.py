@@ -131,6 +131,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Steamed Hams for Gaben!")
 
     parser.add_argument("-u", "--upload", help="Upload data", action="store_true")
+    parser.add_argument("-x", "--reset", help="Reset db", action="store_true")
     parser.add_argument("-p", "--profiles", help="Upload Steam Profiles")
     parser.add_argument("-g", "--groups", help="Upload Steam Groups")
     parser.add_argument("-d", "--detections", help="Upload Detections")
@@ -201,6 +202,9 @@ def steam(username):
 
 def main(args):
     print(config.hams_welcome)
+
+    if args.reset:
+        reset()
 
     if args.random:
         reset()
