@@ -8,7 +8,6 @@ def RunModule(name):
 		pageData = urllib.request.urlopen(req).read().decode("utf8")
 		# Hack to get the name
 		name = pageData.split("<title data-rh=\"true\">")[1].split("</title>")[0]
-		print("Medium Name Test: " + name)
 		if ("–" in name):
 			name = name.split("–")[0]
 			return "Real Name: " + name;
