@@ -1,6 +1,7 @@
 import random
 
 from steamed_hams.inserter import Inserter
+from steamed_hams.steaming import Steaming
 import os
 import argparse
 import names
@@ -136,6 +137,7 @@ def parse_args():
     parser.add_argument("-v", "--debug", help="Debug output", action="store_true")
     parser.add_argument("-r", "--retrieve", help="Retrieve all Aliases")
     parser.add_argument("--random", help="????", action="store_true")
+    parser.add_argument("-s", "--steam", help="Enumerate Steam User")
 
     return parser.parse_args()
 
@@ -157,6 +159,13 @@ def insert_profiles(profiles):
             i.insert_profile(obj)
         i.create_relationships()
 
+def insert_profiles_internal(profiles):
+    print("[ Hams ] insert_profiles")
+    i = Inserter(config.hams_server, config.hams_username, config.hams_password)
+    for profile in profiles:
+        i.insert_profile(profile)
+    i.create_relationships()
+
 def insert_groups(groups):
     print("[ Hams ] insert_groups")
     i = Inserter(config.hams_server, config.hams_username, config.hams_password)
@@ -166,12 +175,39 @@ def insert_groups(groups):
             i.insert_group(obj)
         i.create_relationships()
 
+def steam(username):
+    s = Steaming()
+    main = s.do_work(username)
+    friends = s.get_friend_usernames(username)
+    friend_profile = []
+    for friend in friends:
+        #print(friend[1])
+        s = Steaming()
+        try:
+            friend_profile.append( s.do_work(friend[1]) )
+        except:
+            print(".. Just ignoring some errors ...")
+
+    print("Finished! Inserting...")
+    insert_profiles_internal([main] + friend_profile)
+
+    #print(main)
+    #print(len(friend_profile))
+
+
+
+    #result = s.get_friend_usernames(username)
+    #print(result)
+
 def main(args):
     print(config.hams_welcome)
 
     if args.random:
         reset()
         dummy_insert_data()
+
+    if args.steam:
+        steam(args.steam)
 
     elif args.upload:
         if args.profiles is not None:
