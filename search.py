@@ -15,6 +15,10 @@ def merge_JsonFiles(filename):
         json.dump(result, output_file)
 
 name = sys.argv[1]
+
+if not os.path.exists(name):
+	print("The name file " + name + " does not exist :(")
+	quit()
 names = open(name, "r").readlines()
 for thename in names:
 	thename = thename.strip()
@@ -22,7 +26,7 @@ for thename in names:
 	# Some
 	# os.system("sudo docker run theyahya/sherlock " + thename + " --site GitHub --site LinkedIn --site HackerOne --site GitLab --site Telegram --site Keybase --timeout=1 > " + thename + ".txt && python3 parse.py " + thename + ".txt &")
 	# All
-	os.system("sudo docker run theyahya/sherlock " + thename + " --timeout=1 > " + thename + ".txt && python3 parse.py " + thename + ".txt &")
+	os.system("docker run theyahya/sherlock " + thename + " --timeout=1 > " + thename + ".txt && python3 parse.py " + thename + ".txt &")
 isrunning = "true"
 while (isrunning == "true"):
 	ps = os.popen('ps -aux | grep parse.py').read()
