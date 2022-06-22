@@ -2,6 +2,7 @@
 
 import sys;
 import json;
+import os;
 
 sys.path.append("./modules/")
 name = ""
@@ -55,6 +56,9 @@ with open(filename, 'r') as fileobj:
 			siteurl = item[len(sitename) + 2:]
 			input_data(name, sitename, siteurl)
 	save_output("]")
+
+# Parsed - Nuke the .txt
+os.remove(name + ".txt")
 
 # Clean Up Output File due to suoer hacky JSON implementation
 # Read in the file
