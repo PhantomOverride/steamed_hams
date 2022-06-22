@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import sys;
 import json;
 
@@ -66,6 +68,7 @@ filedata = filedata.replace("},\n]", "}\n]")
 with open(name + ".json", 'w') as file:
   file.write(filedata)
 
-print("Test List Output: " + json.dumps([ob.__dict__ for ob in list]))
+# For testing purposes
+# print("Test List Output: " + json.dumps([ob.__dict__ for ob in list]))
 with open (name + ".json", "w") as file:
 	json.dump([ob.__dict__ for ob in list], file)
