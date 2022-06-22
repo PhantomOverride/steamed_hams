@@ -53,10 +53,13 @@ while (isrunning == "true"):
 alljson = [];
 for thename in names:
 	thename = thename.strip()
-	f = open(thename + ".json")
-	data = json.load(f)
-	alljson += data
-	os.remove(thename + ".json")
+
+	# Make sure the name actually had results
+	if os.path.exists(thename + ".json"):
+		f = open(thename + ".json")
+		data = json.load(f)
+		alljson += data
+		os.remove(thename + ".json")
 
 # Save the final result for neo4j
 with open("result.json", "w") as file:
