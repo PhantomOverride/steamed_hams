@@ -5,6 +5,7 @@ import os
 import argparse
 import names
 import config
+import json
 
 
 
@@ -28,7 +29,7 @@ def dummy_insert_profile():
     profile["groups"][1] = str(random.randint(1001, 9999))
     profile["country"] = "Unknown"
 
-    i = Inserter("bolt://192.168.27.144:7687", "neo4j", "security")
+    i = Inserter(config.hams_server, config.hams_username, config.hams_password)
     i.insert_profile(profile)
 
 def dummy_insert_data():
@@ -74,7 +75,7 @@ def dummy_insert_data():
         "country": "Sweden",
     })
 
-    i = Inserter("bolt://192.168.27.144:7687", "neo4j", "security")
+    i = Inserter(config.hams_server, config.hams_username, config.hams_password)
     for profile in profiles:
         i.insert_profile(profile)
 
@@ -111,11 +112,11 @@ def dummy_insert_data():
         i.insert_detection(detection)
 
 def make_relations():
-    i = Inserter("bolt://192.168.27.144:7687", "neo4j", "security")
+    i = Inserter(config.hams_server, config.hams_username, config.hams_password)
     i.create_relationships()
 
 def reset():
-    i = Inserter("bolt://192.168.27.144:7687", "neo4j", "security")
+    i = Inserter(config.hams_server, config.hams_username, config.hams_password)
     i.burn_everything()
 
 def retrieve_all_aliases(savefile):
@@ -138,6 +139,33 @@ def parse_args():
 
     return parser.parse_args()
 
+def insert_detections(detections):
+    print("[ Hams ] insert_detections")
+    i = Inserter(config.hams_server, config.hams_username, config.hams_password)
+    with open(detections, "r") as f:
+        data = json.load(f)
+        for obj in data:
+            i.insert_detection(obj)
+        i.create_relationships()
+
+def insert_profiles(profiles):
+    print("[ Hams ] insert_profiles")
+    i = Inserter(config.hams_server, config.hams_username, config.hams_password)
+    with open(profiles, "r") as f:
+        data = json.load(f)
+        for obj in data:
+            i.insert_profile(obj)
+        i.create_relationships()
+
+def insert_groups(groups):
+    print("[ Hams ] insert_groups")
+    i = Inserter(config.hams_server, config.hams_username, config.hams_password)
+    with open(groups, "r") as f:
+        data = json.load(f)
+        for obj in data:
+            i.insert_group(obj)
+        i.create_relationships()
+
 def main(args):
     print(config.hams_welcome)
 
@@ -148,14 +176,17 @@ def main(args):
     elif args.upload:
         if args.profiles is not None:
             if args.groups is not None:
-                if args.detections is not None:
-                    pass # do work
-                else:
-                    print("[ Error ] Detections missing, exiting ...")
+                insert_profiles(args.profles)
+                insert_groups(args.groups)
+
             else:
                 print("[ Error ] Groups missing, exiting ...")
+
+        elif args.detections is not None:
+            insert_detections(args.detections)
+
         else:
-            print("[ Error ] Profiles missing, exiting ...")
+            print("[ Error ] Profiles or Detections missing, exiting ...")
 
     elif args.retrieve is not None:
         retrieve_all_aliases(args.retrieve)
