@@ -41,7 +41,7 @@ for thename in names:
 	os.system("docker run theyahya/sherlock " + thename + " --timeout=1 > " + thename + ".txt && python3 parse.py " + thename + ".txt &")
 isrunning = "true"
 while (isrunning == "true"):
-	ps = os.popen('ps -aux | grep parse.py').read()
+	ps = os.popen('ps aux | grep parse.py').read()
 	if ("python3 parse.py" in ps):
 		print("Running...")
 		time.sleep(2)
